@@ -181,6 +181,7 @@ void GPSTimestamp::setTime(double raw_ts){
 	hour = (int32_t)trunc(raw_ts / 10000.0);
 	min = (int32_t)trunc((raw_ts - hour * 10000) / 100.0);
 	sec = raw_ts - min * 100 - hour * 10000;
+    last_update_time = std::chrono::steady_clock::now();
 }
 
 //ddmmyy
@@ -197,6 +198,7 @@ void GPSTimestamp::setDate(int32_t raw_date){
 		month = (int32_t)trunc((raw_date - 10000 * day) / 100.0);
 		year = raw_date - 10000 * day - 100 * month + 2000;
 	}
+    last_update_time = std::chrono::steady_clock::now();
 }
 
 std::string GPSTimestamp::toString(){
@@ -243,7 +245,7 @@ GPSFix::~GPSFix() {
 
 // Returns the duration since the Host has received information
 seconds GPSFix::timeSinceLastUpdate(){
-	time_t now = time(NULL);
+	/*time_t now = time(NULL);
 	struct tm stamp = { 0 };
 
 	stamp.tm_hour = timestamp.hour;
@@ -254,7 +256,9 @@ seconds GPSFix::timeSinceLastUpdate(){
 	stamp.tm_mday = timestamp.day;
 
 	time_t then = mktime(&stamp);
-	uint64_t secs = (uint64_t)difftime(now,then);
+	uint64_t secs = (uint64_t)difftime(now,then);*/
+    auto now = std::chrono::steady_clock::now();
+    double secs = std::chrono::duration<double>(now - timestamp.last_update_time).count();
 	return seconds((uint64_t)secs);
 }
 

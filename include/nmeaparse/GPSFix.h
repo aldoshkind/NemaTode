@@ -114,6 +114,8 @@ namespace nmea {
 		void setDate(int32_t raw_date);
 
 		std::string toString();
+        
+        std::chrono::steady_clock::time_point last_update_time;
 	};
 
 
